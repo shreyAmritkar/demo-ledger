@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  backend:
+    image: shrey89/ledger-backend:latest
+    depends_on:
+      - postgres
+      - redis
+
+  frontend:
+    image: shrey89/ledger-frontend:latest
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ledgeruser
+      POSTGRES_PASSWORD: strongpassword
+      POSTGRES_DB: ledgerdb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+
+  nginx:
+    image: nginx:1.25-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  postgres_data:
